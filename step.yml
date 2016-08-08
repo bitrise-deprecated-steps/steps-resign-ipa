@@ -1,0 +1,39 @@
+title: Resign IPA
+summary: |-
+  Resign the selected IPA with new Certificate and Provisioning Profile.
+description: |-
+  Resign the selected IPA with new Certificate and Provisioning Profile.
+website: https://github.com/bitrise-steplib/steps-resign-ipa
+source_code_url: https://github.com/bitrise-steplib/steps-resign-ipa
+support_url: https://github.com/bitrise-steplib/steps-resign-ipa/issues
+host_os_tags:
+  - "osx-10.10"
+project_type_tags:
+  - ios
+  - xamarin
+type_tags:
+  - archive
+is_requires_admin_user: false
+is_always_run: false
+is_skippable: false
+dependencies: []
+inputs:
+  - itunes_connect_team_id:
+    opts:
+      title: "iTunes Connect Team ID"
+      description: |
+        Specify your team ID for signing
+  - ipa_path: $BITRISE_IPA_PATH
+    opts:
+      title: "IPA path"
+      description: |
+        Path to the IPA what you would like to resign
+      is_required: true
+  - distribution_type: Appstore
+    opts:
+      title: "Distribution type"
+      description: |
+      value_options:
+        - "Appstore"
+        - "InHouse"
+        - "Development"
