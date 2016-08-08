@@ -2,6 +2,8 @@
 
 THIS_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+set -e
+
 echo "Installing Gemfile"
 gemfile_output=$(BUNDLE_GEMFILE="${THIS_SCRIPT_DIR}/Gemfile" bundle install)
 

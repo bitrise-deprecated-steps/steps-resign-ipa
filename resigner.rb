@@ -7,10 +7,12 @@ class Resigner
     raise 'team id conflicted' if !team_id.nil? && !certificate_team_id.eql?(team_id)
     team_id = certificate_team_id
 
+    expended_ipa_path = File.expand_path(ipa_path)
+
     puts "Resigning ipa `#{ipa_path}` with team id `#{team_id}`"
     tmpdir = Dir.mktmpdir
     Dir.chdir(tmpdir) do
-      copy_and_unzip(ipa_path)
+      unzip(expended_ipa_path)
       unsign
 
       embedded_mobileprovisions = gather_embedded_provisioning_profiles()
@@ -32,9 +34,9 @@ class Resigner
 
   private
 
-  def copy_and_unzip(ipa_path)
-    FileUtils.cp(ipa_path, '.')
-    system("/usr/bin/unzip -q #{File.basename(ipa_path)}")
+  def unzip(ipa_path)
+    unzip_results = `/usr/bin/unzip -q "#{ipa_path}"`
+    raise "\e[31mError: #{unzip_results}\e[0m" unless $?.exitstatus.eql?(0)
   end
 
   def unsign
@@ -163,8 +165,11 @@ class Resigner
   end
 
   def zip(new_ipa_path)
-    `zip -qr "#{new_ipa_path}" "Payload/"`
+    `zip -qr "#{new_ipa_path}" *`
+    puts "\e[32mResigned ipa is available at: #{new_ipa_path}\e[0m"
 
-    puts "Resigned ipa is available at: #{new_ipa_path}"
+    puts
+    puts "The resigned IPA path is now available in the Environment Variable: $BITRISE_RESIGNED_IPA_PATH'"
+    `envman add --key BITRISE_RESIGNED_IPA_PATH --value "#{new_ipa_path}"`
   end
 end

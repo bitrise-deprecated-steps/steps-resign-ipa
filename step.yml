@@ -1,8 +1,8 @@
-title: Resign IPA
+title: Re-sign IPA
 summary: |-
-  Resign the selected IPA with new Certificate and Provisioning Profile.
+  Re-sign the selected IPA with new Certificate and Provisioning Profile.
 description: |-
-  Resign the selected IPA with new Certificate and Provisioning Profile.
+  Re-sign the selected IPA with new Certificate and Provisioning Profile.
 website: https://github.com/bitrise-steplib/steps-resign-ipa
 source_code_url: https://github.com/bitrise-steplib/steps-resign-ipa
 support_url: https://github.com/bitrise-steplib/steps-resign-ipa/issues
@@ -27,7 +27,7 @@ inputs:
     opts:
       title: "IPA path"
       description: |
-        Path to the IPA what you would like to resign
+        Path to the IPA what you would like to re-sign
       is_required: true
   - distribution_type: Appstore
     opts:
@@ -37,3 +37,8 @@ inputs:
         - "Appstore"
         - "InHouse"
         - "Development"
+      is_required: true
+outputs:
+  - BITRISE_RESIGNED_IPA_PATH:
+    opts:
+      title: The re-signed IPA's path
