@@ -23,6 +23,11 @@ inputs:
       title: "iTunes Connect Team ID"
       description: |
         Specify your team ID for signing
+  - app_id_prefix:
+    opts:
+      title: "iTunes Connect Application ID Prefix"
+      description: |
+        Specify your application ID prefix for signing. This is for managing legacy app IDs created before June 2011.
   - ipa_path: $BITRISE_IPA_PATH
     opts:
       title: "IPA path"

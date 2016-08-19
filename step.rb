@@ -12,8 +12,11 @@ begin
   team_id = ENV['itunes_connect_team_id']
   team_id = nil if ENV['itunes_connect_team_id'].to_s.eql?('')
 
+  app_id_prefix = ENV['app_id_prefix']
+  app_id_prefix = nil if ENV['app_id_prefix'].to_s.eql?('')
+
   resigner = Resigner.new
-  resigner.resign(distribution_type, ipa_path, team_id)
+  resigner.resign(distribution_type, ipa_path, team_id, app_id_prefix)
 rescue => ex
   puts "\e[31mError: #{ex}\e[0"
   puts "\e[31mFailed to resign ipa\e[0m"

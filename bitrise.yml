@@ -4,6 +4,7 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 app:
   envs:
   # define these in your .bitrise.secrets.yml
+  - APP_ID_PREFIX: $APP_ID_PREFIX
   - ITUNES_CONNECT_TEAM_ID: $ITUNES_CONNECT_TEAM_ID
   - DISTRIBUTION_TYPE: $DISTRIBUTION_TYPE
   - BITRISE_IPA_PATH: $BITRISE_IPA_PATH
