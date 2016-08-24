@@ -2,10 +2,11 @@ require 'tmpdir'
 require 'spaceship'
 
 class Resigner
-  def resign(distribution_type, ipa_path, team_id=nil)
+  def resign(distribution_type, ipa_path, team_id=nil, app_id_prefix=nil)
     certificates, certificate_team_id = list_valid_certificate_names(distribution_type, team_id)
     raise 'team id conflicted' if !team_id.nil? && !certificate_team_id.eql?(team_id)
     team_id = certificate_team_id
+    app_id_prefix = team_id if app_id_prefix.nil?
 
     expended_ipa_path = File.expand_path(ipa_path)
 
@@ -18,7 +19,7 @@ class Resigner
       embedded_mobileprovisions = gather_embedded_provisioning_profiles()
       bundle_identifiers = embedded_mobileprovisions.collect { |embedded_mobileprovision| embedded_mobileprovision[:bundle_identifier] }
 
-      selected_certificate_name, provisioning_profiles_for_bundle_ids = gather_certificate_and_provisioning_profiles(distribution_type, team_id, certificates, bundle_identifiers)
+      selected_certificate_name, provisioning_profiles_for_bundle_ids = gather_certificate_and_provisioning_profiles(distribution_type, team_id, app_id_prefix, certificates, bundle_identifiers)
       raise 'no valid provisioning profiles found for installed certificates' unless selected_certificate_name
 
       update_embedded_mobileprovisions(embedded_mobileprovisions, provisioning_profiles_for_bundle_ids)
@@ -93,14 +94,14 @@ class Resigner
     return embedded_mobileprovisions
   end
 
-  def gather_certificate_and_provisioning_profiles(distribution_type, team_id, certificates, bundle_identifiers)
+  def gather_certificate_and_provisioning_profiles(distribution_type, team_id, app_id_prefix, certificates, bundle_identifiers)
     plists = []
     valid_certs = {}
     Dir[File.expand_path("~/Library/MobileDevice/Provisioning Profiles/*.mobileprovision")].each do |provisioning_profile|
       plist = Plist::parse_xml(`security cms -D -i "#{provisioning_profile}"`)
       if plist['Entitlements']['com.apple.developer.team-identifier'].eql?(team_id)
         bundle_identifiers.each do |bundle_identifier|
-          next unless File.fnmatch(plist['Entitlements']['application-identifier'], "#{team_id}.#{bundle_identifier}")
+          next unless File.fnmatch(plist['Entitlements']['application-identifier'], "#{app_id_prefix}.#{bundle_identifier}")
 
           # Check if we have a valid certificate for the provisioning profile
           plist['DeveloperCertificates'].each do |developer_certificate|
