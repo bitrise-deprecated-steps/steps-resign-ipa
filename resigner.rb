@@ -1,5 +1,6 @@
 require 'tmpdir'
 require 'spaceship'
+require 'fileutils'
 
 class Resigner
   def resign(distribution_type, ipa_path, team_id=nil, app_id_prefix=nil)
@@ -23,6 +24,7 @@ class Resigner
       raise 'no valid provisioning profiles found for installed certificates' unless selected_certificate_name
 
       update_embedded_mobileprovisions(embedded_mobileprovisions, provisioning_profiles_for_bundle_ids)
+      add_swift_support_library
       resign_ipa(selected_certificate_name)
 
       resign_result = `codesign -v Payload/*.app 2>&1`
@@ -140,6 +142,23 @@ class Resigner
       embedded_mobileprovision_path = mobileprovision[:path]
 
       FileUtils.cp provisioning_profile_path, embedded_mobileprovision_path
+    end
+  end
+
+  def add_swift_support_library()
+    unless Dir["Payload/*.app/Frameworks/libswift*"].empty?
+      developer_directory=`xcode-select --print-path`.strip!
+      raise 'No developer directory found' unless developer_directory
+
+      swift_support_directory = 'SwiftSupport/iphoneos'
+      FileUtils::mkdir_p swift_support_directory
+
+      Dir["Payload/*.app/Frameworks/libswift*"].each do |dylib_path|
+        dirname = File.dirname(dylib_path)
+        dylib = File.basename(dylib_path)
+        FileUtils.copy(File.join(developer_directory, 'Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos', dylib), File.join(swift_support_directory, dylib))
+        FileUtils.copy(File.join(developer_directory, 'Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos', dylib), File.join(dirname, dylib))
+      end
     end
   end
 
