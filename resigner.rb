@@ -146,16 +146,18 @@ class Resigner
   end
 
   def add_swift_support_library()
-    unless Dir["Payload/*.app/Frameworks"].empty?
+    unless Dir["Payload/*.app/Frameworks/libswift*"].empty?
       developer_directory=`xcode-select --print-path`.strip!
       raise 'No developer directory found' unless developer_directory
 
       swift_support_directory = 'SwiftSupport/iphoneos'
       FileUtils::mkdir_p swift_support_directory
 
-      Dir["Payload/*.app/Frameworks/*.dylib"].each do |dylib_path|
+      Dir["Payload/*.app/Frameworks/libswift*"].each do |dylib_path|
+        dirname = File.dirname(dylib_path)
         dylib = File.basename(dylib_path)
         FileUtils.copy(File.join(developer_directory, 'Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos', dylib), File.join(swift_support_directory, dylib))
+        FileUtils.copy(File.join(developer_directory, 'Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphoneos', dylib), File.join(dirname, dylib))
       end
     end
   end
