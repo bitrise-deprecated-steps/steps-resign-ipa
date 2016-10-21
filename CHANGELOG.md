@@ -1,9 +1,15 @@
-## Changelog (Current version: 1.1.0)
+## Changelog (Current version: 1.2.0)
 
 -----------------
 
+### 1.2.0 (2016 Oct 21)
+
+* [50ccf76] Merge pull request #6 from bitrise-steplib/feature/swiftsupportchanges
+* [a9df6ea] fixed relative path issue swift support added
+
 ### 1.1.0 (2016 Aug 24)
 
+* [02f0f9f] v1.1.0
 * [1ef8074] release configs added
 * [4e69291] prepare for 1.1.0
 * [4d48a5f] log configs
@@ -13,4 +19,4 @@
 
 -----------------
 
-Updated: 2016 Aug 24
+Updated: 2016 Oct 21
