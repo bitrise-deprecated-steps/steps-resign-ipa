@@ -85,7 +85,7 @@ class Resigner
 	def gather_embedded_provisioning_profiles(path_to_payload='.')
 		embedded_mobileprovisions = []
 		Dir[File.join(path_to_payload, 'Payload/**/embedded.mobileprovision')].each do |mobileprovision|
-			provisioning_profile = Plist::parse_xml(`security cms -D -i "#{mobileprovision}"`)
+			provisioning_profile = Plist::parse_xml(`security cms -D -i "#{mobileprovision}" 2> /dev/null`)
 
 			embedded_mobileprovisions << {
 				bundle_identifier: `/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "#{[File.dirname(mobileprovision), 'Info.plist'].join(File::SEPARATOR)}"`.strip,
@@ -100,7 +100,7 @@ class Resigner
 		plists = []
 		valid_certs = {}
 		Dir[File.expand_path("~/Library/MobileDevice/Provisioning Profiles/*.mobileprovision")].each do |provisioning_profile|
-			plist = Plist::parse_xml(`security cms -D -i "#{provisioning_profile}"`)
+			plist = Plist::parse_xml(`security cms -D -i "#{provisioning_profile}" 2> /dev/null`)
 			if plist['Entitlements']['com.apple.developer.team-identifier'].eql?(team_id)
 				bundle_identifiers.each do |bundle_identifier|
 					next unless File.fnmatch(plist['Entitlements']['application-identifier'], "#{app_id_prefix}.#{bundle_identifier}")
@@ -179,7 +179,9 @@ class Resigner
 
 			embedded_profile_path = File.join(path_to_sign, 'embedded.mobileprovision')
 			if File.exist?(embedded_profile_path)
-				plist = Plist::parse_xml(`security cms -D -i "#{embedded_profile_path}" > #{profile_path}`)
+				profiles = `security cms -D -i "#{embedded_profile_path}" 2> /dev/null`
+				File.write(profile_path, profiles)
+				plist = Plist::parse_xml(profiles)
 				`/usr/libexec/PlistBuddy -x -c 'Print :Entitlements' #{profile_path} > #{entitlements_path}`
 				`/usr/bin/codesign -f -s "#{code_signing_identity}" --entitlements #{entitlements_path} "#{path_to_sign}" 2>/dev/null`
 			else
