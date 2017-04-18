@@ -6,6 +6,8 @@ begin
 	team_id = ENV['itunes_connect_team_id']
 	app_id_prefix = ENV['app_id_prefix']
 
+	puts "\e[31mThis step is deprecated, please use export-xcarchive step instead\e[0m"
+
 	puts 'Configs:'
 	puts "  * ipa_path: #{ipa_path}"
 	puts "  * distribution_type: #{distribution_type}"
