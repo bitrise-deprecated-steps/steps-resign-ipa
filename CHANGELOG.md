@@ -1,6 +1,13 @@
-## Changelog (Current version: 1.2.0)
+## Changelog (Current version: 1.2.1)
 
 -----------------
+
+### 1.2.1 (2017 Apr 18)
+
+* [6026d7f] Prepare for 1.2.1
+* [980c3bc] Fix macOS Sierra compatibility issues (#10)
+* [afe659d] changelog fix (#7)
+* [6271c9e] bitrise.yml updates
 
 ### 1.2.0 (2016 Oct 21)
 
@@ -19,4 +26,4 @@
 
 -----------------
 
-Updated: 2016 Oct 21
+Updated: 2017 Apr 18
