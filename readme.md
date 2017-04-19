@@ -1,6 +1,7 @@
 # Re-sign IPA
 
 __DEPRECATED!__
+Will be removed by: 2017.10.01
 Please use [export-xcarchive](https://github.com/bitrise-steplib/steps-export-xcarchive) step instead.
 
 Re-sign the selected IPA with new Certificate and Provisioning Profile.

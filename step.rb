@@ -7,6 +7,7 @@ begin
 	app_id_prefix = ENV['app_id_prefix']
 
 	puts "\e[31mThis step is deprecated, please use export-xcarchive step instead\e[0m"
+	puts "\e[31mWill be removed by: 2017.10.01\e[0m"
 
 	puts 'Configs:'
 	puts "  * ipa_path: #{ipa_path}"
