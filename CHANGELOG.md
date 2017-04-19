@@ -1,6 +1,10 @@
-## Changelog (Current version: 1.2.1)
+## Changelog (Current version: 1.2.2)
 
 -----------------
+
+### 1.2.2 (2017 Apr 19)
+
+* [e47a800] Prepare for 1.2.2
 
 ### 1.2.1 (2017 Apr 18)
 
@@ -26,4 +30,4 @@
 
 -----------------
 
-Updated: 2017 Apr 18
+Updated: 2017 Apr 19
