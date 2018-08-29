@@ -118,7 +118,7 @@ class Resigner
 									(valid_certs[certificate][bundle_identifier] ||= []) << provisioning_profile
 								end
 							when "inhouse"
-								if !plist['Entitlements']['get-task-allow'].eql?(true) && !plist['ProvisionedDevices'].nil?
+								if !plist['Entitlements']['get-task-allow'].eql?(true) && plist['ProvisionsAllDevices'].eql?(true)
 									(valid_certs[certificate][bundle_identifier] ||= []) << provisioning_profile
 								end
 							when "development"
