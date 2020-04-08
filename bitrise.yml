@@ -1,59 +1,14 @@
 format_version: 1.1.0
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
-
+project_type: ""
 app:
   envs:
   - RELEASE_VERSION: 1.2.2
-  
-  # define these in your .bitrise.secrets.yml
   - APP_ID_PREFIX: $APP_ID_PREFIX
   - ITUNES_CONNECT_TEAM_ID: $ITUNES_CONNECT_TEAM_ID
   - DISTRIBUTION_TYPE: $DISTRIBUTION_TYPE
   - BITRISE_IPA_PATH: $BITRISE_IPA_PATH
-
 workflows:
-  # ----------------------------------------------------------------
-  # --- workflow to Step Test
-  test:
-    steps:
-    - script:
-        title: Step audit
-        inputs:
-        - content: stepman audit --step-yml=./step.yml
-    - change-workdir:
-        title: Switch working dir to test / _tmp dir
-        description: |-
-          To prevent step testing issues, like referencing relative
-          files with just './some-file' in the step's code, which would
-          work for testing the step from this directory directly
-          but would break if the step is included in another `bitrise.yml`.
-        run_if: true
-        inputs:
-        - path: ./_tmp
-        - is_create_path: true
-    - path::./:
-        run_if: true
-        inputs:
-        - itunes_connect_team_id: $ITUNES_CONNECT_TEAM_ID
-        - distribution_type: $DISTRIBUTION_TYPE
-        - ipa_path: $BITRISE_IPA_PATH
-
-  # ----------------------------------------------------------------
-  # --- workflow to create Release version
-  create-release:
-    steps:
-    - script:
-        title:
-        inputs:
-        - content: |
-            #!/bin/bash
-            set -ex
-            go get -u github.com/bitrise-tools/releaseman
-            export CI=true
-            releaseman create --version "$RELEASE_VERSION"
-
-  # ----------------------------------------------------------------
-  # --- workflows to Share this step into a Step Library
   audit-this-step:
     steps:
     - script:
@@ -62,14 +17,17 @@ workflows:
             #!/bin/bash
             set -ex
             stepman audit --step-yml ./step.yml
-
+  create-release:
+    steps:
+    - script:
+        inputs:
+        - content: |
+            #!/bin/bash
+            set -ex
+            go get -u github.com/bitrise-tools/releaseman
+            export CI=true
+            releaseman create --version "$RELEASE_VERSION"
   share-this-step:
-    envs:
-      # if you want to share this step into a StepLib
-      - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
-      - STEP_ID_IN_STEPLIB: resign-ipa
-      - STEP_GIT_VERION_TAG_TO_SHARE: $RELEASE_VERSION
-      - STEP_GIT_CLONE_URL: https://github.com/bitrise-steplib/steps-resign-ipa.git
     description: |-
       If this is the first time you try to share a Step you should
       first call: $ bitrise share
@@ -93,6 +51,11 @@ workflows:
       the way described in the guide printed at the end of the process.
     before_run:
     - audit-this-step
+    envs:
+    - MY_STEPLIB_REPO_FORK_GIT_URL: $MY_STEPLIB_REPO_FORK_GIT_URL
+    - STEP_ID_IN_STEPLIB: resign-ipa
+    - STEP_GIT_VERION_TAG_TO_SHARE: $RELEASE_VERSION
+    - STEP_GIT_CLONE_URL: https://github.com/bitrise-steplib/steps-resign-ipa.git
     steps:
     - script:
         inputs:
@@ -102,3 +65,27 @@ workflows:
             bitrise share start -c ${MY_STEPLIB_REPO_FORK_GIT_URL}
             bitrise share create --stepid ${STEP_ID_IN_STEPLIB} --tag ${STEP_GIT_VERION_TAG_TO_SHARE} --git ${STEP_GIT_CLONE_URL}
             bitrise share finish
+  test:
+    steps:
+    - script:
+        title: Step audit
+        inputs:
+        - content: stepman audit --step-yml=./step.yml
+    - change-workdir:
+        title: Switch working dir to test / _tmp dir
+        description: |-
+          To prevent step testing issues, like referencing relative
+          files with just './some-file' in the step's code, which would
+          work for testing the step from this directory directly
+          but would break if the step is included in another `bitrise.yml`.
+        run_if: "true"
+        inputs:
+        - path: ./_tmp
+        - is_create_path: true
+    - path::./:
+        run_if: "true"
+        inputs:
+        - itunes_connect_team_id: $ITUNES_CONNECT_TEAM_ID
+        - distribution_type: $DISTRIBUTION_TYPE
+        - provisioning_profile: $PEAR_PROVISIONING_PROFILE
+        - ipa_path: $BITRISE_IPA_PATH

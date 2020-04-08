@@ -21,22 +21,25 @@ is_requires_admin_user: false
 is_always_run: false
 is_skippable: false
 dependencies: []
+deps:
+  brew:
+  - name: fastlane
 inputs:
   - itunes_connect_team_id:
     opts:
       title: "iTunes Connect Team ID"
       description: |
         Specify your team ID for signing
-  - app_id_prefix:
-    opts:
-      title: "iTunes Connect Application ID Prefix"
-      description: |
-        Specify your application ID prefix for signing. This is for managing legacy app IDs created before June 2011.
   - ipa_path: $BITRISE_IPA_PATH
     opts:
       title: "IPA path"
       description: |
         Path to the IPA what you would like to re-sign
+      is_required: true
+  - provisioning_profile:
+    opts:
+      title: "Provisioning Profile UUID"
+      description: "UUID of profile as displayed on bitrise.io Code Signing page"
       is_required: true
   - distribution_type: Appstore
     opts:
