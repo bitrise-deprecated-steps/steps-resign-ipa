@@ -24,7 +24,7 @@ class Resigner
 
 		puts "Resigning ipa `#{ipa_path}` with team id `#{team_id}`"
 
-		new_ipa_path = "#{File.basename(expended_ipa_path, '.ipa')}-#{distribution_type}-resigned.ipa"
+		new_ipa_path = "#{File.dirname(expended_ipa_path)}/#{File.basename(expended_ipa_path, '.ipa')}-#{distribution_type}-resigned.ipa"
 		FileUtils.copy_file(expended_ipa_path, new_ipa_path)
 		provisioning_profile_path = File.expand_path("~/Library/MobileDevice/Provisioning Profiles/#{provisioning_profile}.mobileprovision")
 		system("fastlane sigh resign '#{new_ipa_path}' --signing_identity '#{selected_certificate_name}' --provisioning_profile '#{provisioning_profile_path}'")
